@@ -1,0 +1,30 @@
+filter:
+    excluded_paths:
+        - 'tests/*'
+        - 'vendor/*'
+before_commands:
+    - 'composer install'
+checks:
+    php: true
+coding_style:
+    php:
+        indentation:
+            general:
+                use_tabs: true
+build: true
+tools:
+    external_code_coverage: true
+    php_mess_detector: true
+    php_code_sniffer: true
+    sensiolabs_security_checker: true
+    php_pdepend: true
+    php_loc:
+        enabled: true
+        excluded_dirs:
+            - tests
+            - vendor
+    php_cpd:
+        enabled: true
+        excluded_dirs:
+            - tests
+            - vendor

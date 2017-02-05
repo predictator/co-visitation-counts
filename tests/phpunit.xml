@@ -1,0 +1,36 @@
+<phpunit
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.5/phpunit.xsd"
+        backupGlobals="true"
+        backupStaticAttributes="false"
+        bootstrap="bootstrap.php"
+        cacheTokens="false"
+        colors="true"
+        convertErrorsToExceptions="true"
+        convertNoticesToExceptions="true"
+        convertWarningsToExceptions="false"
+        forceCoversAnnotation="false"
+        mapTestClassNameToCoveredClassName="false"
+        beStrictAboutOutputDuringTests="true"
+        beStrictAboutTestSize="true"
+        verbose="true">
+    <testsuites>
+        <testsuite name="Unit">
+            <directory>./Unit/</directory>
+        </testsuite>
+
+        <testsuite name="Performance">
+            <directory>./Performance/</directory>
+        </testsuite>
+
+    </testsuites>
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">../src</directory>
+        </whitelist>
+        <blacklist>
+            <directory suffix=".php">../vendor/</directory>
+            <directory suffix=".php">./</directory>
+        </blacklist>
+    </filter>
+</phpunit>

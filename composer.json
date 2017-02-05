@@ -1,0 +1,24 @@
+{
+  "name": "predictator/co-visitation-counts",
+  "license": "MIT",
+  "keywords": ["co-visitation-counts", "co-visitation", "co visit", "predictions"],
+  "authors": [
+    {
+      "name": "Peter Tihanyi",
+      "email": "tihi@systream.hu"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Predictator\\": "src/",
+      "Tests\\Predictator\\": "tests/"
+    }
+  },
+  "require": {
+    "php": ">= 7.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^5.7",
+    "fzaninotto/faker": "^1.6"
+  }
+}
