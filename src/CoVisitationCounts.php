@@ -40,6 +40,10 @@ class CoVisitationCounts
 					continue;
 				}
 
+				if ($last == $item) {
+					continue;
+				}
+
 				$this->increaseCoVisionCounts($last, $item, $result);
 				$this->increaseCoVisionCounts($item, $last, $result);
 
@@ -47,15 +51,19 @@ class CoVisitationCounts
 			}
 		}
 
-		$countTotal = 0;
-
 		foreach ($result as &$item) {
-			$countTotal += array_sum($item);
 			arsort($item);
 		}
 
 		if (isset($result[$visit->getObjectId()])) {
-			return array_keys($result[$visit->getObjectId()]);
+			$result = array_keys($result[$visit->getObjectId()]);
+			$alreadyVisited = $this->visits[$visit->getUserId()] ?? array();
+			foreach ($result as $key => $item) {
+				if (in_array($item, $alreadyVisited)) {
+					unset($result[$key]);
+				}
+			}
+			return array_values($result);
 		}
 
 		return array();
