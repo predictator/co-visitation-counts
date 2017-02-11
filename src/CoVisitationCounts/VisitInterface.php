@@ -12,7 +12,7 @@ interface VisitInterface
 	public function getUserId() : string;
 
 	/**
-	 * @return string
+	 * @return VisitedObjectInterface
 	 */
-	public function getObjectId() : string;
+	public function getVisitedObject() : VisitedObjectInterface;
 }

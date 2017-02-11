@@ -10,19 +10,20 @@ class Visit implements VisitInterface
 	 * @var string
 	 */
 	private $userId;
+
 	/**
-	 * @var string
+	 * @var VisitedObjectInterface
 	 */
-	private $objectId;
+	private $visitedObject;
 
 	/**
 	 * @param string $userId
-	 * @param string $objectId
+	 * @param VisitedObjectInterface $visitedObject
 	 */
-	public function __construct(string $userId, string $objectId)
+	public function __construct(string $userId, VisitedObjectInterface $visitedObject)
 	{
 		$this->userId = $userId;
-		$this->objectId = $objectId;
+		$this->visitedObject = $visitedObject;
 	}
 
 	/**
@@ -34,10 +35,10 @@ class Visit implements VisitInterface
 	}
 
 	/**
-	 * @return string
+	 * @return VisitedObjectInterface
 	 */
-	public function getObjectId(): string
+	public function getVisitedObject(): VisitedObjectInterface
 	{
-		return $this->objectId;
+		return $this->visitedObject;
 	}
 }

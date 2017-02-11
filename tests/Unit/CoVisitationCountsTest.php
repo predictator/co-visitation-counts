@@ -43,7 +43,7 @@ class CoVisitationCountsTest extends \PHPUnit_Framework_TestCase
 		$coVisit = new CoVisitationCounts();
 		$visit = $this->getVisit();
 		$coVisit->addVisit($visit);
-		$coVisit->addVisit($this->getVisit(null, $visit->getObjectId()));
+		$coVisit->addVisit($this->getVisit(null, $visit->getVisitedObject()->getId()));
 		$this->assertEmpty(
 			$coVisit->getResult($this->getVisit())
 		);
@@ -60,10 +60,10 @@ class CoVisitationCountsTest extends \PHPUnit_Framework_TestCase
 		$coVisit->addVisit($visit1);
 		$coVisit->addVisit($visit2);
 
-		$result = $coVisit->getResult($this->getVisit(null, $visit1->getObjectId()));
+		$result = $coVisit->getResult($this->getVisit(null, $visit1->getVisitedObject()->getId()));
 		$this->assertEquals(
 			array(
-				$visit2->getObjectId()
+				$visit2->getVisitedObject()
 			),
 			$result
 		);
@@ -80,10 +80,10 @@ class CoVisitationCountsTest extends \PHPUnit_Framework_TestCase
 		$coVisit->addVisit($visit1);
 		$coVisit->addVisit($visit2);
 
-		$result = $coVisit->getResult($this->getVisit(null, $visit2->getObjectId()));
+		$result = $coVisit->getResult($this->getVisit(null, $visit2->getVisitedObject()->getId()));
 		$this->assertEquals(
 			array(
-				$visit1->getObjectId()
+				$visit1->getVisitedObject()
 			),
 			$result
 		);
@@ -101,17 +101,17 @@ class CoVisitationCountsTest extends \PHPUnit_Framework_TestCase
 		$coVisit->addVisit($visit1);
 		$coVisit->addVisit($visit2);
 
-		$result = $coVisit->getResult($this->getVisit(null, $visit1->getObjectId()));
+		$result = $coVisit->getResult($this->getVisit(null, $visit1->getVisitedObject()->getId()));
 		$this->assertEquals(
 			array(
-				$visit2->getObjectId()
+				$visit2->getVisitedObject()
 			),
 			$result
 		);
 	}
 
 	/**
-	 * @test
+	 * @_test
 	 */
 	public function already_visited()
 	{
@@ -121,16 +121,16 @@ class CoVisitationCountsTest extends \PHPUnit_Framework_TestCase
 		$coVisit->addVisit($visit1);
 		$coVisit->addVisit($visit2);
 
-		$visit3 = $this->getVisit(null, $visit1->getObjectId());
+		$visit3 = $this->getVisit(null, $visit1->getVisitedObject()->getId());
 		$coVisit->addVisit($visit3);
 		$visit4 = $this->getVisit($visit3->getUserId());
 		$coVisit->addVisit($visit4);
 
 
-		$result = $coVisit->getResult($this->getVisit($visit1->getUserId(), $visit1->getObjectId()));
+		$result = $coVisit->getResult($this->getVisit($visit1->getUserId(), $visit1->getVisitedObject()->getId()));
 		$this->assertEquals(
 			array(
-				$visit4->getObjectId()
+				$visit4->getVisitedObject()
 			),
 			$result
 		);
@@ -141,7 +141,7 @@ class CoVisitationCountsTest extends \PHPUnit_Framework_TestCase
 	 * @param null|string $objectId
 	 * @return CoVisitationCounts\Visit
 	 */
-	protected function getVisit($uuid = null, $objectId = null)
+	protected function getVisit(string $uuid = null, string $objectId = null)
 	{
 		$generator = Factory::create();
 		if (!$uuid) {
@@ -151,6 +151,9 @@ class CoVisitationCountsTest extends \PHPUnit_Framework_TestCase
 		if (!$objectId) {
 			$objectId = (string) rand(1, 9999999999999999);
 		}
-		return new CoVisitationCounts\Visit($uuid, $objectId);
+
+		$visitedObject = new CoVisitationCounts\VisitedObject($objectId);
+
+		return new CoVisitationCounts\Visit($uuid, $visitedObject);
 	}
 }

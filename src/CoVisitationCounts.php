@@ -2,6 +2,7 @@
 
 namespace Predictator;
 
+use Predictator\CoVisitationCounts\VisitedObjectInterface;
 use Predictator\CoVisitationCounts\VisitInterface;
 
 class CoVisitationCounts
@@ -9,30 +10,41 @@ class CoVisitationCounts
 	/**
 	 * @var array
 	 */
-	private $visits = [];
+	private $userVisits = [];
+
+	/**
+	 * @var VisitedObjectInterface[]
+	 */
+	private $visitedObjects = [];
 
 	/**
 	 * @param VisitInterface $visit
 	 */
 	public function addVisit(VisitInterface $visit)
 	{
-		if (!isset($this->visits[$visit->getUserId()])) {
-			$this->visits[$visit->getUserId()] = [];
+		if (!isset($this->userVisits[$visit->getUserId()])) {
+			$this->userVisits[$visit->getUserId()] = [];
 		}
-		$this->visits[$visit->getUserId()][] = $visit->getObjectId();
+		$this->userVisits[$visit->getUserId()][] = $visit->getVisitedObject();
+
+		if (!isset($this->visitedObjects[$visit->getVisitedObject()->getId()])) {
+			$this->visitedObjects[$visit->getVisitedObject()->getId()] = $visit->getVisitedObject();
+		}
 
 	}
 
 	/**
 	 * @param VisitInterface $visit
-	 * @return array
+	 * @return VisitedObjectInterface[]
 	 */
 	public function getResult(VisitInterface $visit) :array
 	{
 		$result = [];
 
+		$visitId = $visit->getVisitedObject()->getId();
+
 		$last = null;
-		foreach ($this->visits as $userId => $visitList) {
+		foreach ($this->userVisits as $userId => $visitList) {
 			foreach ($visitList as $item) {
 
 				if (!$last) {
@@ -55,36 +67,36 @@ class CoVisitationCounts
 			arsort($item);
 		}
 
-		if (isset($result[$visit->getObjectId()])) {
-			$result = array_keys($result[$visit->getObjectId()]);
-			$alreadyVisited = $this->visits[$visit->getUserId()] ?? array();
-			foreach ($result as $key => $item) {
-				if (in_array($item, $alreadyVisited)) {
-					unset($result[$key]);
-				}
+		if (isset($result[$visitId])) {
+			$return = [];
+
+			foreach (array_keys($result[$visitId]) as $objectId) {
+				$return[] = $this->visitedObjects[$objectId];
 			}
-			return array_values($result);
+			return $return;
 		}
 
 		return array();
 	}
 
 	/**
-	 * @param string $first
-	 * @param string $next
+	 * @param VisitedObjectInterface $first
+	 * @param VisitedObjectInterface $next
 	 * @param array $result
 	 */
-	private function increaseCoVisionCounts(string $first, string $next, array &$result)
+	private function increaseCoVisionCounts(VisitedObjectInterface $first, VisitedObjectInterface $next, array &$result)
 	{
-		if (!isset($result[$first])) {
-			$result[$first] = [];
+		$firstId = $first->getId();
+		if (!isset($result[$firstId])) {
+			$result[$firstId] = [];
 		}
 
-		if (!isset($result[$first][$next])) {
-			$result[$first][$next] = 0;
+		$nextId = $next->getId();
+		if (!isset($result[$firstId][$nextId])) {
+			$result[$firstId][$nextId] = 0;
 		}
 
-		$result[$first][$next]++;
+		$result[$firstId][$nextId]++;
 	}
 
 }
