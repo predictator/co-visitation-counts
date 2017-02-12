@@ -62,9 +62,7 @@ class CoVisitationCountsTest extends \PHPUnit_Framework_TestCase
 
 		$result = $coVisit->getResult($this->getVisit(null, $visit1->getVisitedObject()->getId()));
 		$this->assertEquals(
-			array(
-				$visit2->getVisitedObject()
-			),
+			$this->getResultSet(array($visit2->getVisitedObject())),
 			$result
 		);
 	}
@@ -82,9 +80,7 @@ class CoVisitationCountsTest extends \PHPUnit_Framework_TestCase
 
 		$result = $coVisit->getResult($this->getVisit(null, $visit2->getVisitedObject()->getId()));
 		$this->assertEquals(
-			array(
-				$visit1->getVisitedObject()
-			),
+			$this->getResultSet(array($visit1->getVisitedObject())),
 			$result
 		);
 	}
@@ -102,18 +98,15 @@ class CoVisitationCountsTest extends \PHPUnit_Framework_TestCase
 		$coVisit->addVisit($visit2);
 
 		$result = $coVisit->getResult($this->getVisit(null, $visit1->getVisitedObject()->getId()));
-		$this->assertEquals(
-			array(
-				$visit2->getVisitedObject()
-			),
-			$result
-		);
+		$resultSet = new CoVisitationCounts\ResultSet();
+		$resultSet->addVisitedObject($visit2->getVisitedObject());
+		$this->assertEquals($resultSet, $result);
 	}
 
 	/**
-	 * @_test
+	 * @test
 	 */
-	public function already_visited()
+	public function CoVisitModel()
 	{
 		$coVisit = new CoVisitationCounts();
 		$visit1 = $this->getVisit();
@@ -121,17 +114,33 @@ class CoVisitationCountsTest extends \PHPUnit_Framework_TestCase
 		$coVisit->addVisit($visit1);
 		$coVisit->addVisit($visit2);
 
-		$visit3 = $this->getVisit(null, $visit1->getVisitedObject()->getId());
-		$coVisit->addVisit($visit3);
-		$visit4 = $this->getVisit($visit3->getUserId());
-		$coVisit->addVisit($visit4);
+		$model = $coVisit->exportModel(new CoVisitationCounts\CoVisitationCountsModel());
+		$this->assertInstanceOf(CoVisitationCounts\CoVisitationCountsModelInterface::class, $model);
 
-
-		$result = $coVisit->getResult($this->getVisit($visit1->getUserId(), $visit1->getVisitedObject()->getId()));
+		$result = $model->getResult($this->getVisit(null, $visit1->getVisitedObject()->getId()));
 		$this->assertEquals(
-			array(
-				$visit4->getVisitedObject()
-			),
+			$this->getResultSet(array($visit2->getVisitedObject())),
+			$result
+		);
+	}
+
+	/**
+	 * @test
+	 */
+	public function CoVisitModel_empty()
+	{
+		$coVisit = new CoVisitationCounts();
+		$visit1 = $this->getVisit();
+		$visit2 = $this->getVisit($visit1->getUserId());
+		$coVisit->addVisit($visit1);
+		$coVisit->addVisit($visit2);
+
+		$model = $coVisit->exportModel(new CoVisitationCounts\CoVisitationCountsModel());
+		$this->assertInstanceOf(CoVisitationCounts\CoVisitationCountsModelInterface::class, $model);
+
+		$result = $model->getResult($this->getVisit());
+		$this->assertEquals(
+			new CoVisitationCounts\ResultSet(),
 			$result
 		);
 	}
@@ -155,5 +164,19 @@ class CoVisitationCountsTest extends \PHPUnit_Framework_TestCase
 		$visitedObject = new CoVisitationCounts\VisitedObject($objectId);
 
 		return new CoVisitationCounts\Visit($uuid, $visitedObject);
+	}
+
+
+	/**
+	 * @param array $resultSetArray
+	 * @return CoVisitationCounts\ResultSet
+	 */
+	protected function getResultSet(array $resultSetArray)
+	{
+		$resultSet = new CoVisitationCounts\ResultSet();
+		foreach ($resultSetArray as $item) {
+			$resultSet->addVisitedObject($item);
+		}
+		return $resultSet;
 	}
 }
