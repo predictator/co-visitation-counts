@@ -88,6 +88,59 @@ class CoVisitationCountsTest extends \PHPUnit_Framework_TestCase
 	/**
 	 * @test
 	 */
+	public function visited_2nd()
+	{
+		$coVisit = new CoVisitationCounts();
+		$visit1 = $this->getVisit();
+		$visit2 = $this->getVisit($visit1->getUserId());
+		$visit3 = $this->getVisit($visit1->getUserId());
+		$coVisit->addVisit($visit1);
+		$coVisit->addVisit($visit2);
+		$coVisit->addVisit($visit3);
+
+		$result = $coVisit->getResult($this->getVisit(null, $visit1->getVisitedObject()->getId()));
+		$this->assertEquals(
+			$this->getResultSet(
+				array(
+					$visit2->getVisitedObject(),
+					$visit3->getVisitedObject(),
+				)
+			),
+			$result
+		);
+	}
+
+	/**
+	 * @test
+	 */
+	public function visited_3nd()
+	{
+		$coVisit = new CoVisitationCounts();
+		$visit1 = $this->getVisit();
+		$visit2 = $this->getVisit($visit1->getUserId());
+		$visit3 = $this->getVisit($visit1->getUserId());
+		$visit4 = $this->getVisit($visit1->getUserId());
+		$coVisit->addVisit($visit1);
+		$coVisit->addVisit($visit2);
+		$coVisit->addVisit($visit3);
+		$coVisit->addVisit($visit4);
+
+		$result = $coVisit->getResult($this->getVisit(null, $visit1->getVisitedObject()->getId()));
+		$this->assertEquals(
+			$this->getResultSet(
+				array(
+					$visit2->getVisitedObject(),
+					$visit3->getVisitedObject(),
+					$visit4->getVisitedObject(),
+				)
+			),
+			$result
+		);
+	}
+
+	/**
+	 * @test
+	 */
 	public function sameVisit_clear()
 	{
 		$coVisit = new CoVisitationCounts();

@@ -12,12 +12,22 @@ class CoVisitationCounts
 	/**
 	 * @var array
 	 */
+	protected $result = [];
+
+	/**
+	 * @var array
+	 */
 	private $userVisits = [];
 
 	/**
 	 * @var VisitedObjectInterface[]
 	 */
 	private $visitedObjects = [];
+
+	/**
+	 * @var int
+	 */
+	protected $visitationTrackDeep = 3;
 
 	/**
 	 * @param VisitInterface $visit
@@ -59,19 +69,19 @@ class CoVisitationCounts
 	/**
 	 * @param string $first
 	 * @param string $next
-	 * @param array $result
+	 * @param int $withNumber
 	 */
-	private function increaseCoVisionCounts(string $first, string $next, array &$result)
+	private function increaseCoVisionCounts(string $first, string $next, $withNumber = 1)
 	{
-		if (!isset($result[$first])) {
-			$result[$first] = [];
+		if (!isset($this->result[$first])) {
+			$this->result[$first] = [];
 		}
 
-		if (!isset($result[$first][$next])) {
-			$result[$first][$next] = 0;
+		if (!isset($this->result[$first][$next])) {
+			$this->result[$first][$next] = 0;
 		}
 
-		$result[$first][$next]++;
+		$this->result[$first][$next] += $withNumber;
 	}
 
 	/**
@@ -96,33 +106,39 @@ class CoVisitationCounts
 	 */
 	private function processResult(): array
 	{
-		$result = [];
-
-		$last = null;
+		$visitLog = [];
 		foreach ($this->userVisits as $userId => $visitList) {
 			foreach ($visitList as $item) {
 
-				if (!$last) {
-					$last = $item;
+				$visitLogLength = count($visitLog);
+				if ($visitLogLength < 1) {
+					$visitLog[] = $item;
 					continue;
 				}
 
+				$last = end($visitLog);
 				if ($last == $item) {
 					continue;
 				}
 
-				$this->increaseCoVisionCounts($last, $item, $result);
-				$this->increaseCoVisionCounts($item, $last, $result);
+				$iteration = 0;
+				while ($visitLogLength > $this->visitationTrackDeep) {
+					$lastLast = array_shift($visitLog);
+					$score = $this->visitationTrackDeep - ++$iteration;
+					$this->increaseCoVisionCounts($item, $lastLast, $score);
+					$this->increaseCoVisionCounts($lastLast, $item, $score);
+				}
 
-				$last = $item;
+				$this->increaseCoVisionCounts($last, $item, $this->visitationTrackDeep);
+				$this->increaseCoVisionCounts($item, $last, $this->visitationTrackDeep);
 			}
 		}
 
-		foreach ($result as &$item) {
+		foreach ($this->result as &$item) {
 			arsort($item);
 		}
 
-		return $result;
+		return $this->result;
 	}
 
 }
