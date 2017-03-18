@@ -12,7 +12,7 @@ $visit = new CoVisitationCounts\Visit('userId-12', $visitedObject);
 $coVisit->addVisit($visit);
 
 $currentVisitedObject = new CoVisitationCounts\VisitedObject('11');
-$currentVisit = new CoVisitationCounts\Visit('userId-16', $currentVisitedObject);
+$currentVisit = new CoVisitationCounts\Visit('userId-16', $currentVisitedObject, new \DateTime());
 
 $result = $coVisit->getResult($currentVisit);
 ```
@@ -33,5 +33,7 @@ foreach ($result as $item) {
 }
 
 ```
+
+[![Build Status](https://travis-ci.org/predictator/co-visitation-counts.svg?branch=master)](https://travis-ci.org/predictator/co-visitation-counts)
 
 predictator.eu

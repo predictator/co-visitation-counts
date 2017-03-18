@@ -26,7 +26,7 @@ class Visit implements VisitInterface
 	 * @param VisitedObjectInterface $visitedObject
 	 * @param \DateTimeInterface $time
 	 */
-	public function __construct(string $userId, VisitedObjectInterface $visitedObject, \DateTimeInterface  $time = null)
+	public function __construct(string $userId, VisitedObjectInterface $visitedObject, \DateTimeInterface $time = null)
 	{
 		$this->userId = $userId;
 		$this->visitedObject = $visitedObject;
