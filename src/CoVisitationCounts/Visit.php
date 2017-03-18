@@ -17,13 +17,23 @@ class Visit implements VisitInterface
 	private $visitedObject;
 
 	/**
+	 * @var \DateTime
+	 */
+	private $time;
+
+	/**
 	 * @param string $userId
 	 * @param VisitedObjectInterface $visitedObject
+	 * @param \DateTimeInterface $time
 	 */
-	public function __construct(string $userId, VisitedObjectInterface $visitedObject)
+	public function __construct(string $userId, VisitedObjectInterface $visitedObject, \DateTimeInterface  $time = null)
 	{
 		$this->userId = $userId;
 		$this->visitedObject = $visitedObject;
+		if (!$time) {
+			$time = new \DateTime();
+		}
+		$this->time = $time;
 	}
 
 	/**
@@ -40,5 +50,13 @@ class Visit implements VisitInterface
 	public function getVisitedObject(): VisitedObjectInterface
 	{
 		return $this->visitedObject;
+	}
+
+	/**
+	 * @return \DateTimeInterface
+	 */
+	public function getVisitTime() : \DateTimeInterface
+	{
+		return $this->time;
 	}
 }

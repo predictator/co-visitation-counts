@@ -15,4 +15,9 @@ interface VisitInterface
 	 * @return VisitedObjectInterface
 	 */
 	public function getVisitedObject() : VisitedObjectInterface;
+
+	/**
+	 * @return \DateTimeInterface
+	 */
+	public function getVisitTime() : \DateTimeInterface;
 }
