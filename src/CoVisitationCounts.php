@@ -28,7 +28,7 @@ class CoVisitationCounts
 	/**
 	 * @var int
 	 */
-	protected $visitationTrackDeep = 3;
+	protected $visitationTrackDepth = 3;
 
 	/**
 	 * @param VisitInterface $visit
@@ -134,15 +134,15 @@ class CoVisitationCounts
 				$iteration = 0;
 
 				// truncate visit log
-				$visitLog = array_slice($visitLog, -$this->visitationTrackDeep);
+				$visitLog = array_slice($visitLog, -$this->visitationTrackDepth);
 				foreach ($visitLog as $lastVisit) {
-					$score = $this->visitationTrackDeep - ++$iteration;
+					$score = $this->visitationTrackDepth - ++$iteration;
 					$this->increaseCoVisionCounts($visit, $lastVisit, $score);
 					$this->increaseCoVisionCounts($lastVisit, $visit, $score);
 				}
 
-				$this->increaseCoVisionCounts($last, $visit, $this->visitationTrackDeep);
-				$this->increaseCoVisionCounts($visit, $last, $this->visitationTrackDeep);
+				$this->increaseCoVisionCounts($last, $visit, $this->visitationTrackDepth);
+				$this->increaseCoVisionCounts($visit, $last, $this->visitationTrackDepth);
 				$visitLog[] = $visit;
 			}
 		}
