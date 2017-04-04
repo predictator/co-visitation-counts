@@ -56,11 +56,12 @@ class CoVisitationCounts
 		$visitId = $visit->getVisitedObject()->getId();
 		$resultSet = new ResultSet();
 
-		if (isset($result[$visitId])) {
+		if (!isset($result[$visitId])) {
+			return $resultSet;
+		}
 
-			foreach (array_keys($result[$visitId]) as $objectId) {
-				$resultSet->addVisitedObject($this->visitedObjects[$objectId]);
-			}
+		foreach (array_keys($result[$visitId]) as $objectId) {
+			$resultSet->addVisitedObject($this->visitedObjects[$objectId]);
 		}
 
 		return $resultSet;

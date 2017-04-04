@@ -11,17 +11,17 @@ class ResultSet implements \Countable, \Iterator, \ArrayAccess
 	private $visitedObjects = array();
 
 	/**
+	 * @var int
+	 */
+	protected $currentIndex = 0;
+
+	/**
 	 * @param VisitedObjectInterface $result
 	 */
 	public function addVisitedObject(VisitedObjectInterface $result)
 	{
 		$this->visitedObjects[] = $result;
 	}
-
-	/**
-	 * @var int
-	 */
-	protected $currentIndex = 0;
 
 	/**
 	 * Return the current element
